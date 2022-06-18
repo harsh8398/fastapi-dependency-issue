@@ -9,11 +9,7 @@ SessionLocal = sessionmaker(bind=engine)
 
 Base = declarative_base()
 
-
-# ApacheBench Test #1
+# ApacheBench Test #2
 def get_db():
-    db = SessionLocal()
-    try:
+    with SessionLocal() as db:
         yield db
-    finally:
-        db.close()
