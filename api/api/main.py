@@ -1,3 +1,4 @@
+import anyio
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 
@@ -10,6 +11,8 @@ app = FastAPI()
 
 @app.on_event("startup")
 def startup():
+    limiter = anyio.to_thread.current_default_thread_limiter()
+    limiter.total_tokens = 4096
     Base.metadata.create_all(bind=engine)
 
 
