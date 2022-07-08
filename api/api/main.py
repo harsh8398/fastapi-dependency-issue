@@ -1,5 +1,4 @@
 import anyio
-import anyio._backends._asyncio as anyio_asyncio
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 
@@ -12,7 +11,8 @@ app = FastAPI()
 
 @app.on_event("startup")
 def startup():
-    anyio_asyncio._default_thread_limiter.set(anyio.CapacityLimiter(4096))
+    limiter = anyio.to_thread.current_default_thread_limiter()
+    limiter.total_tokens = 4096
     Base.metadata.create_all(bind=engine)
 
 
